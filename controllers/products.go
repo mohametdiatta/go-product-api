@@ -1,15 +1,17 @@
 package controllers
 
 import (
+	"gin-learning/app"
+	"gin-learning/middlewares"
 	"gin-learning/services"
-
-	"github.com/gin-gonic/gin"
 )
 
-func ProductController(app *gin.Engine) {
+func ProductController(a app.App) {
 	sr := services.ProductsService{}
+	sr.Models = a.Models
 	{
-		v1 := app.Group("/products")
+		v1 := a.Router.Group("/products")
+		v1.Use(middlewares.Logger())
 		v1.POST("", sr.CreateProduct)
 		v1.GET("", sr.AllProducts)
 		v1.DELETE("/:id", sr.DeleteProduct)

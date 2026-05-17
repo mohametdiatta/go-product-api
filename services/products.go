@@ -1,16 +1,18 @@
 package services
 
 import (
+	"gin-learning/database"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ProductsService struct {
-	c *gin.Context
+	Models database.ModelRegistery
 }
 
 func (p *ProductsService) CreateProduct(c *gin.Context) {
+
 	c.JSON(http.StatusOK, gin.H{"action": "Create Products"})
 
 }
