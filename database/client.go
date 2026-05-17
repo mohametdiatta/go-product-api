@@ -15,15 +15,14 @@ type ModelRegistery struct {
 }
 
 func (r *ModelRegistery) New(ctx context.Context, db *mongo.Database) {
+	r.Model = make(map[string]*mongorm.Model)
 	r.Context = ctx
 	r.DB = db
 
 }
 func (r *ModelRegistery) Register(m map[string]*mongorm.Model, collectionName string) {
-	r.Model = make(map[string]*mongorm.Model)
 	r.Model = m
 	r.collectionName = collectionName
-
 }
 func (r *ModelRegistery) Init() *ModelRegistery {
 	for key, value := range r.Model {
