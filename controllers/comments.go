@@ -3,12 +3,14 @@ package controllers
 import (
 	"gin-learning/middlewares"
 	"gin-learning/models"
-	"gin-learning/mongorm"
+
 	"gin-learning/services"
+
+	"github.com/mohametdiatta/gormongo"
 )
 
-func CommentsController(a *mongorm.App) {
-	comments, err := mongorm.GetModel[*models.Commentschema](a.Registry, "comments")
+func CommentsController(a *gormongo.App) {
+	comments, err := gormongo.GetModel[*models.Commentschema](a.Registry, "comments")
 	if err != nil {
 		panic(err)
 	}
