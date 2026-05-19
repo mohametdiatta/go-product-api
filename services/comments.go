@@ -1,28 +1,31 @@
 package services
 
 import (
-	"gin-learning/database"
 	"gin-learning/models"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type CommentsService struct {
-	Models database.ModelRegistery
-}
+func AllComments(comment *models.Commentschema) gin.HandlerFunc {
+	return func(c *gin.Context) {
 
-func (p *CommentsService) AllComments(c *gin.Context) {
-	// data:=p.Models.Model["comments"].FindAll()
-	// c.JSON(http.StatusOK, gin.H{"data": "List AllProducts"})
+		var comments []models.Commentschema
 
-	var comments []models.Commentschema
+		err := comment.FindAll(bson.D{}, &comments)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   err.Error(),
+			})
+			return
+		}
 
-	err := p.Models.Model["comments"].FindAll(bson.D{}, &comments) // bson.D{} = pas de filtre
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"count":   len(comments),
+			"data":    comments,
+		})
 	}
-
-	c.JSON(200, comments)
 }

@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"gin-learning/app"
 	"gin-learning/controllers"
-	"gin-learning/database"
 	"gin-learning/models"
 	"gin-learning/mongorm"
 	"log"
@@ -27,22 +25,14 @@ func main() {
 	}
 
 	db := client.Database("sample_mflix")
-	registery := database.ModelRegistery{}
-	registery.New(context.Background(), db)
-	registery.Register(map[string]*mongorm.Model{
-		"comments": models.Comment,
-	}, "comments")
-	registery.Init()
+	registry := mongorm.NewRegistry(context.Background(), db)
+	registry.Register("comments", &models.Commentschema{}, "comments")
 
-	app := &app.App{
-		Router: gin.Default(),
-		Models: registery,
-	}
+	app := mongorm.NewApp(registry)
 
 	app.Router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong"})
 	})
-	controllers.ProductController(*app)
-	controllers.CommentsController(*app)
-	app.Run()
+	controllers.CommentsController(app)
+	app.Run(":3000")
 }
